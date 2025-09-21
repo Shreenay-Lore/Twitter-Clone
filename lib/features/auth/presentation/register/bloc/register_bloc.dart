@@ -18,12 +18,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Future<void> _onRegisterSubmitted(RegisterSubmitted event, Emitter emit) async {
     emit(RegisterLoading());
     try{
-      final token = await registerUsecase.call(
+      final session = await registerUsecase.call(
         email: event.email, 
         username: event.username, 
         password: event.password
       );
-      await userSessionService.saveUserSession(token: token);
+      await userSessionService.saveUserSession(userSession: session);
       emit(RegisterSuccess());
     }
     catch(e){

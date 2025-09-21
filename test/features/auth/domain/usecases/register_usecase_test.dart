@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:twitter/features/auth/domain/entities/user_session_entity.dart';
 import 'package:twitter/features/auth/domain/usecases/register_usecase.dart';
 
 import '../../data/repository/mock_auth_repository.dart';
@@ -28,7 +29,9 @@ void main(){
         password: password
       );
 
-      expect(result, 'token');
+      expect(result, isA<UserSessionEntity>());
+      expect(result.email, email);
+      expect(result.token, "token");
     });
 
 

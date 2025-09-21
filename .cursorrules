@@ -1,0 +1,276 @@
+# Flutter BLoC TDD Clean Architecture Cursor Rules
+
+## Project Overview
+This is a Flutter Twitter Clone project using BLoC pattern with Test-Driven Development (TDD) and Clean Architecture principles.
+
+## Architecture Guidelines
+
+### 1. Clean Architecture Structure
+- **Features**: Organize code by features, not by technical layers
+- **Layers**: Each feature follows Clean Architecture with 3 layers:
+  - `data/` - Data sources, repositories implementation, models
+  - `domain/` - Entities, use cases, repository interfaces, services
+  - `presentation/` - BLoC, UI screens, widgets
+
+### 2. Directory Structure Rules
+```
+lib/features/[feature_name]/
+├── data/
+│   ├── data_sources/          # Remote & local data sources
+│   ├── models/                # Data models (DTOs)
+│   └── repository/            # Repository implementations
+├── domain/
+│   ├── entities/              # Business entities
+│   ├── repository/            # Repository interfaces
+│   ├── services/              # Domain services
+│   └── usecases/              # Use cases
+└── presentation/
+    ├── bloc/                  # BLoC files
+    ├── screens/               # Page/Route widgets
+    └── widgets/               # Feature-specific widgets
+```
+
+### 3. Naming Conventions
+
+#### Files and Directories
+- Use snake_case for file and directory names
+- Feature names should be singular (e.g., `auth`, `feed`, `profile`)
+- BLoC files: `[feature]_bloc.dart`, `[feature]_event.dart`, `[feature]_state.dart`
+- Use cases: `[action]_usecase.dart` (e.g., `login_usecase.dart`)
+- Entities: `[entity]_entity.dart` (e.g., `user_entity.dart`)
+- Models: `[entity]_model.dart` (e.g., `user_model.dart`)
+
+#### Classes and Variables
+- Use PascalCase for class names
+- Use camelCase for variables, methods, and functions
+- BLoC classes: `[Feature]Bloc`, `[Feature]Event`, `[Feature]State`
+- Use cases: `[Action]UseCase` (e.g., `LoginUseCase`)
+- Entities: `[Entity]Entity` (e.g., `UserEntity`)
+
+### 4. BLoC Pattern Rules
+
+#### BLoC Structure
+- One BLoC per feature or major functionality
+- Events should be immutable and extend `Equatable`
+- States should be immutable and extend `Equatable`
+- Use `bloc_test` package for testing BLoCs
+
+#### Event Naming
+- Use verb + noun pattern: `LoginSubmitted`, `PostCreated`, `UserUpdated`
+- Past tense for completed actions: `LoginSucceeded`, `PostDeleted`
+
+#### State Naming
+- Use noun + status pattern: `LoginLoading`, `LoginSuccess`, `LoginFailure`
+- Include initial state: `LoginInitial`
+
+### 5. Dependency Injection
+- Use constructor injection for dependencies
+- Register BLoCs in `main.dart` using `MultiBlocProvider`
+- Pass dependencies through constructors, not through static access
+
+### 6. Error Handling
+- Use custom exception classes for domain errors
+- Handle network errors, validation errors, and business logic errors
+- Always provide meaningful error messages to users
+
+### 7. Testing Rules (TDD)
+
+#### Test Structure
+- Mirror the source code structure in `test/` directory
+- One test file per source file
+- Use `group()` to organize related tests
+- Use descriptive test names that explain the scenario
+
+#### Test Naming
+- Format: `should [expected behavior] when [condition]`
+- Example: `should return user data when login is successful`
+
+#### Mock Objects
+- Create mock implementations for all external dependencies
+- Place mocks in `test/features/[feature]/data/repository/`
+- Use descriptive mock class names: `MockAuthRepository`, `MockUserSessionService`
+
+#### Test Categories
+- **Unit Tests**: Test individual classes in isolation
+- **BLoC Tests**: Test BLoC behavior using `bloc_test`
+- **Widget Tests**: Test UI components
+- **Integration Tests**: Test complete user flows
+
+### 8. Code Quality Rules
+
+#### Imports
+- Group imports: Flutter/Dart, packages, local files
+- Use relative imports for files in the same feature
+- Use absolute imports for cross-feature dependencies
+
+#### Documentation
+- Document public APIs with dartdoc comments
+- Use `///` for documentation comments
+- Include parameter descriptions and return value descriptions
+
+#### Constants
+- Define constants in `lib/core/constants/`
+- Use `const` constructors where possible
+- Group related constants in classes
+
+### 9. State Management Rules
+
+#### BLoC Lifecycle
+- Initialize BLoCs in `main.dart` or at the widget level
+- Dispose BLoCs properly to prevent memory leaks
+- Use `BlocProvider` for single BLoC, `MultiBlocProvider` for multiple
+
+#### State Updates
+- Never mutate state objects directly
+- Always create new state instances
+- Use `copyWith()` method for partial state updates
+
+### 10. Data Flow Rules
+
+#### Repository Pattern
+- Define repository interfaces in domain layer
+- Implement repositories in data layer
+- Use dependency injection to provide implementations
+
+#### Use Cases
+- One use case per business operation
+- Use cases should be pure functions (no side effects)
+- Handle validation and business rules in use cases
+
+### 11. UI/UX Rules
+
+#### Widget Organization
+- Create reusable widgets in `presentation/widgets/`
+- Keep widgets small and focused on single responsibility
+- Use `StatelessWidget` when possible, `StatefulWidget` only when needed
+
+#### Responsive Design
+- Use `MediaQuery` for responsive layouts
+- Test on different screen sizes
+- Follow Material Design guidelines
+
+### 12. Performance Rules
+
+#### Memory Management
+- Dispose controllers and streams properly
+- Use `const` constructors to reduce widget rebuilds
+- Implement `AutomaticKeepAliveClientMixin` for expensive widgets
+
+#### Network Optimization
+- Implement proper caching strategies
+- Use pagination for large data sets
+- Handle offline scenarios gracefully
+
+### 13. Security Rules
+
+#### Data Protection
+- Use `FlutterSecureStorage` for sensitive data
+- Never hardcode API keys or secrets
+- Validate all user inputs
+
+#### Authentication
+- Implement proper session management
+- Use secure token storage
+- Handle token refresh automatically
+
+### 14. Git and Version Control
+
+#### Commit Messages
+- Use conventional commit format: `type(scope): description`
+- Types: `feat`, `fix`, `test`, `refactor`, `docs`, `style`
+- Example: `feat(auth): add login functionality`
+
+#### Branch Naming
+- Use feature branches: `feature/auth-login`
+- Use descriptive branch names
+- Create pull requests for code review
+
+### 15. Development Workflow
+
+#### TDD Process
+1. Write failing test first (Red)
+2. Write minimal code to pass test (Green)
+3. Refactor code while keeping tests passing (Refactor)
+4. Repeat for next feature
+
+#### Code Review Checklist
+- [ ] Tests are written and passing
+- [ ] Code follows naming conventions
+- [ ] Dependencies are properly injected
+- [ ] Error handling is implemented
+- [ ] Documentation is updated
+- [ ] No hardcoded values
+- [ ] Memory leaks are prevented
+
+### 16. Package Management
+
+#### Dependencies
+- Keep dependencies up to date
+- Use specific version constraints
+- Document why each dependency is needed
+- Remove unused dependencies
+
+#### Key Packages
+- `flutter_bloc`: State management
+- `bloc_test`: BLoC testing
+- `equatable`: Value equality
+- `supabase_flutter`: Backend services
+- `flutter_secure_storage`: Secure storage
+
+### 17. Environment Configuration
+
+#### Configuration Management
+- Use environment-specific configuration files
+- Never commit sensitive configuration
+- Use build flavors for different environments
+
+### 18. Code Generation
+
+#### When to Use
+- Use code generation for repetitive code
+- Consider `json_annotation` for model serialization
+- Use `build_runner` for code generation
+
+### 19. Accessibility
+
+#### A11y Guidelines
+- Add semantic labels to widgets
+- Ensure proper contrast ratios
+- Support screen readers
+- Test with accessibility tools
+
+### 20. Internationalization
+
+#### i18n Setup
+- Use `flutter_localizations`
+- Extract all user-facing strings
+- Support multiple languages from the start
+- Use proper date/time formatting
+
+## Best Practices Summary
+
+1. **Always write tests first** (TDD approach)
+2. **Keep features independent** and loosely coupled
+3. **Use dependency injection** for better testability
+4. **Follow single responsibility principle** for classes
+5. **Implement proper error handling** at all layers
+6. **Use immutable objects** for state management
+7. **Document public APIs** with dartdoc
+8. **Keep widgets small** and focused
+9. **Use const constructors** for performance
+10. **Follow Material Design** guidelines for UI
+
+## Common Anti-Patterns to Avoid
+
+- ❌ Putting business logic in UI widgets
+- ❌ Using global state without proper management
+- ❌ Hardcoding API endpoints or secrets
+- ❌ Creating god classes with too many responsibilities
+- ❌ Skipping tests for "simple" features
+- ❌ Mutating state objects directly
+- ❌ Using `setState` in BLoC-based architecture
+- ❌ Creating circular dependencies between features
+- ❌ Ignoring error handling
+- ❌ Not disposing resources properly
+
+Remember: Clean Architecture is about making your code testable, maintainable, and scalable. Always prioritize code quality over quick fixes.
